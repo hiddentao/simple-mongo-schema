@@ -159,4 +159,119 @@ test['simple mismatch'] = function() {
 
 
 
+test['not required'] = function() {
+  var s = schema({
+    name: {
+      type: String,
+    },
+    numSiblings: {
+      type: Number
+    },
+    born: {
+      type: Date,
+    },
+    hasKids: {
+      type: Boolean,
+    },
+    cars: {
+      type: Array
+    },
+    address: {
+      type: Object
+    }
+  });
+
+  tryNoCatch(s, {});
+};
+
+
+
+
+test['required'] = function() {
+  var s = schema({
+    name: {
+      type: String,
+      required: true,
+    },
+    numSiblings: {
+      type: Number,
+      required: true,
+    },
+    born: {
+      type: Date,
+      required: true,
+    },
+    hasKids: {
+      type: Boolean,
+      required: true,
+    },
+    cars: {
+      type: Array,
+      required: true,
+    },
+    address: {
+      type: Object,
+      required: true,
+    }
+  });
+
+  var e = tryCatch(s, {});
+
+  e.failures.should.eql(
+    ["/name: missing value",
+    "/numSiblings: missing value",
+    "/born: missing value",
+    "/hasKids: missing value",
+    "/cars: missing value",
+    "/address: missing value"]
+  );
+};
+
+
+
+
+test['array of items'] = {
+  'mismatch': function() {
+    var Child = {
+      name: {
+        type: String
+      },
+      age: {
+        type: Number
+      }
+    };
+
+    var s = schema({
+      name: {
+        type: String,
+      },
+      children: {
+        type: [Child]
+      }
+    });
+  
+    var e = tryCatch(s, {
+      name: 'john',
+      children: [
+        {
+          name: 'jennifer',
+          age: '23',
+        },
+        {
+          name: 23,
+          age: 'blah',
+        },
+      ]
+    });
+
+    e.failures.should.eql([ '/children/0/age: must be a number',
+    '/children/1/name: must be a string',
+    '/children/1/age: must be a number' ]
+    );
+  }
+};
+
+
+
+
 

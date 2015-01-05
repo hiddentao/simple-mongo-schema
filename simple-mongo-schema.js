@@ -92,8 +92,11 @@
       }
 
       // missing?
-      if (currentNode.required && undefined === objectNode) {
-        failures.push([currentPath, 'required']);
+      if (undefined === objectNode) {
+        if (currentNode.required) {
+          failures.push([currentPath, 'missing value']);
+        }
+
         continue;
       }
 
