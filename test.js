@@ -406,26 +406,56 @@ test['deeply nested objects'] = {
       name: {
         type: String,
       },
-      children: [{
+      children: {
         type: Child
-      }]
+      },
     });
     
-    tryNoCatch(s, {
+    var e = tryCatch(s, {
       name: 'john',
       children: {
         name: 'jennifer',
+        address: {
+          houseNum: 23,
+          street: 'mako',
+          country: 1
+        },
+        toys: [{
+          name: null,
+        }],
         age: 23,
       },
     });
+
+    e.failures.should.eql([
+      "/children/address/country: must be a string",
+      "/children/toys/0/name: must be a string"
+      ])
   },
-  'mismatch': function(=) {
+  'mismatch': function() {
     var Child = {
       name: {
         type: String
       },
-      age: {
-        type: Number
+      address: {
+        type: {
+          houseNum: {
+            type: Number
+          },
+          street: {
+            type: String
+          },
+          country: {
+            type: String,
+          },
+        },
+      },
+      toys: {
+        type: [{
+          name: {
+            type: String
+          }
+        }]
       }
     };
 
@@ -435,26 +465,26 @@ test['deeply nested objects'] = {
       },
       children: {
         type: Child
-      }
-    });
-  
-    var e = tryCatch(s, {
-      name: 'john',
-      children: {
-        name: 23,
-        age: 'blah',
       },
     });
-
-    e.failures.should.eql([ 
-      '/children/name: must be a string',
-      '/children/age: must be a number' 
-    ]);
+    
+    tryNoCatch(s, {
+      name: 'john',
+      children: {
+        name: 'jennifer',
+        address: {
+          houseNum: 23,
+          street: 'mako',
+          country: 'uk'
+        },
+        toys: [{
+          name: 'blah',
+        }],
+        age: 23,
+      },
+    });
   }
 };
-
-
-
 
 
 
