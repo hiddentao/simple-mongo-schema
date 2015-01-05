@@ -10,7 +10,7 @@ var chai = require('chai'),
 chai.use(require('sinon-chai'));
 
 
-var schema = require('./simple-mongo-schema');
+var schema = require('./');
 
 
 var mocker = null;
