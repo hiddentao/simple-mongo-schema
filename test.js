@@ -217,14 +217,14 @@ test['required'] = function() {
 
   var e = tryCatch(s, {});
 
-  e.failures.should.eql(
-    ["/name: missing value",
+  e.failures.should.eql([
+    "/name: missing value",
     "/numSiblings: missing value",
     "/born: missing value",
     "/hasKids: missing value",
     "/cars: missing value",
-    "/address: missing value"]
-  );
+    "/address: missing value"
+  ]);
 };
 
 
@@ -297,12 +297,162 @@ test['array of items'] = {
       ]
     });
 
-    e.failures.should.eql([ '/children/0/age: must be a number',
-    '/children/1/name: must be a string',
-    '/children/1/age: must be a number' ]
-    );
+    e.failures.should.eql([ 
+      '/children/0/age: must be a number',
+      '/children/1/name: must be a string',
+      '/children/1/age: must be a number' 
+    ]);
   }
 };
+
+
+
+
+
+test['sub-object'] = {
+  'match': function() {
+    var Child = {
+      name: {
+        type: String
+      },
+      age: {
+        type: Number
+      }
+    };
+
+    var s = schema({
+      name: {
+        type: String,
+      },
+      children: {
+        type: Child
+      }
+    });
+    
+    tryNoCatch(s, {
+      name: 'john',
+      children: {
+        name: 'jennifer',
+        age: 23,
+      },
+    });
+  },
+  'mismatch': function() {
+    var Child = {
+      name: {
+        type: String
+      },
+      age: {
+        type: Number
+      }
+    };
+
+    var s = schema({
+      name: {
+        type: String,
+      },
+      children: {
+        type: Child
+      }
+    });
+  
+    var e = tryCatch(s, {
+      name: 'john',
+      children: {
+        name: 23,
+        age: 'blah',
+      },
+    });
+
+    e.failures.should.eql([ 
+      '/children/name: must be a string',
+      '/children/age: must be a number' 
+    ]);
+  }
+};
+
+
+
+
+test['deeply nested objects'] = {
+  'match': function() {
+    var Child = {
+      name: {
+        type: String
+      },
+      address: {
+        type: {
+          houseNum: {
+            type: Number
+          },
+          street: {
+            type: String
+          },
+          country: {
+            type: String,
+          },
+        },
+      },
+      toys: {
+        type: [{
+          name: {
+            type: String
+          }
+        }]
+      }
+    };
+
+    var s = schema({
+      name: {
+        type: String,
+      },
+      children: [{
+        type: Child
+      }]
+    });
+    
+    tryNoCatch(s, {
+      name: 'john',
+      children: {
+        name: 'jennifer',
+        age: 23,
+      },
+    });
+  },
+  'mismatch': function(=) {
+    var Child = {
+      name: {
+        type: String
+      },
+      age: {
+        type: Number
+      }
+    };
+
+    var s = schema({
+      name: {
+        type: String,
+      },
+      children: {
+        type: Child
+      }
+    });
+  
+    var e = tryCatch(s, {
+      name: 'john',
+      children: {
+        name: 23,
+        age: 'blah',
+      },
+    });
+
+    e.failures.should.eql([ 
+      '/children/name: must be a string',
+      '/children/age: must be a number' 
+    ]);
+  }
+};
+
 
 
 
