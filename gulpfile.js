@@ -1,16 +1,12 @@
 var gulp = require('gulp'),
   path = require('path');
 
-var concat = require('gulp-concat');
 var jshint = require('gulp-jshint');
-var uglify = require('gulp-uglify');
-var expect = require('gulp-expect-file');
 var mocha = require('gulp-mocha');
 var runSequence = require('run-sequence');
 
 
 var srcFile = './simple-mongo-schema.js';
-var minFile = 'simple-mongo-schema.min.js';
 var buildFolder = '.'
 
 
@@ -24,24 +20,6 @@ gulp.task('jshint', function() {
 });
 
 
-gulp.task('js', ['jshint'], function() {
-  return gulp.src( srcFile )
-    .pipe( concat(minFile) )
-    .pipe( uglify() )
-    .pipe( gulp.dest(buildFolder) )
-    ;
-})
-
-
-gulp.task('verify-js', function() {
-  return gulp.src( path.join(buildFolder, '*.min.js') )
-    .pipe( expect([
-      minFile
-    ]) )
-  ;
-})
-
-
 gulp.task('test', function () {
   return gulp.src('./test.js', { read: false })
       .pipe(mocha({
@@ -53,7 +31,7 @@ gulp.task('test', function () {
 
 
 gulp.task('default', function(cb) {
-  runSequence('js', 'verify-js', 'test', cb);
+  runSequence('jshint', 'test', cb);
 });
 
 

@@ -10,7 +10,7 @@ var chai = require('chai'),
 chai.use(require('sinon-chai'));
 
 
-var schema = require('./simple-mongo-schema.min');
+var schema = require('./simple-mongo-schema');
 
 
 var mocker = null;
@@ -231,6 +231,39 @@ test['required'] = function() {
 
 
 test['array of items'] = {
+  'match': function() {
+    var Child = {
+      name: {
+        type: String
+      },
+      age: {
+        type: Number
+      }
+    };
+
+    var s = schema({
+      name: {
+        type: String,
+      },
+      children: {
+        type: [Child]
+      }
+    });
+    
+    tryNoCatch(s, {
+      name: 'john',
+      children: [
+        {
+          name: 'jennifer',
+          age: 23,
+        },
+        {
+          name: 'mark',
+          age: 54,
+        },
+      ]
+    });
+  },
   'mismatch': function() {
     var Child = {
       name: {
