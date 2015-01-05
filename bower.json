@@ -1,0 +1,28 @@
+{
+  "name": "simple-mongo-schema",
+  "main": "simple-mongo-schema.js",
+  "version": "0.1.0",
+  "authors": [
+    "Ramesh Nair <ram@hiddentao.com>"
+  ],
+  "description": "An easy-to-write schema validator for Mongo JSON objects",
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "mongo",
+    "schema",
+    "json",
+    "validation"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/hiddentao/simple-mongo-schema",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "gulpfile.js",
+    "test.js"
+  ]
+}
