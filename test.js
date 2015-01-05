@@ -485,6 +485,3 @@ test['deeply nested objects'] = {
     });
   }
 };
-
-
-
