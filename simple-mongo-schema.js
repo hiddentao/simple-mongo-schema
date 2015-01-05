@@ -20,6 +20,11 @@
 })('SimpleSchema', function () {
   "use strict";
 
+  var _typeToStr = function(typeClass) {
+    return typeClass.toString().match(/function\s(.*)\(/)[1];
+  };
+
+
   /**
    * Construct a new schema.
    */
@@ -30,6 +35,7 @@
 
     this.schema = schema;
   };
+
 
   /**
    * Validate an object against this schema.
@@ -73,67 +79,80 @@
 
     var self = this;
 
-    if (!obj) {
-      return failures.push([schemaPath, 'value missing']);
-    }
-
     for (var key in schemaNode) {
-      if (!schemaNode.hasOwnProperty(key)) {
+      var currentPath = schemaPath + '/' + key,
+        currentNode = schemaNode[key],
+        objectNode = obj[key],
+        currentNodeType = currentNode.type;
+
+      // if type not set
+      if (!currentNodeType) {
+        failures.push([currentPath, 'invalid schema']);
         continue;
       }
 
-      var currentPath = schemaPath + '.' + key,
-        currentNode = schemaNode[key],
-        currentNodeKeys = Object.keys(currentNode),
-        objectNode = obj[key];
-
-      // if value is a sub-object
-      if (
-        (!currentNode.type && currentNodeKeys.length) || (currentNode.type && currentNode.type.type)) {
-        self._doValidate({
-          failures: failures,
-          schema: {
-            path: currentPath,
-            node: currentNode,
-          },
-          object: objectNode,
-        });
+      // missing?
+      if (currentNode.required && undefined === objectNode) {
+        failures.push([currentPath, 'required']);
+        continue;
       }
-      // if value is an array
-      else if (currentNode instanceof Array) {
-        if (!(objectNode instanceof Array)) {
-          failures.push([currentPath, 'must be an array']);
-        } else {
-          var subSchema = currentNode[0];
 
-          for (var index in objectNode) {
-            var item = objectNode[index];
-            
+      switch (currentNodeType) {
+        case String:
+          if ('string' !== typeof objectNode) {
+            failures.push([currentPath, 'must be a string']);
+          }
+          break;
+        case Boolean:
+          if ('boolean' !== typeof objectNode) {
+            failures.push([currentPath, 'must be true or false']);
+          }
+          break;
+        case Number:
+          if ('number' !== typeof objectNode) {
+            failures.push([currentPath, 'must be a number']);
+          }
+          break;
+        case Date:
+        case Object:
+        case Array:
+          if (!(objectNode instanceof currentNodeType)) {
+            failures.push([currentPath, 'must be of type ' + _typeToStr(currentNodeType)]);
+          }
+          break;
+        default:
+          // if value should be an array
+          if (currentNodeType instanceof Array) {
+            if (!(objectNode instanceof Array)) {
+              failures.push([currentPath, 'must be an array']);
+            } else {
+              var subSchema = currentNodeType[0];
+
+              for (var index in objectNode) {
+                var item = objectNode[index];
+
+                self._doValidate({
+                  failures: failures,
+                  schema: {
+                    path: currentPath + '/' + index,
+                    node: subSchema,
+                  },
+                  object: item,
+                });
+              }
+            }
+          }
+          // else it just be an object
+          else {
             self._doValidate({
               failures: failures,
               schema: {
-                path: currentPath + '.' + index,
-                node: subSchema,
+                path: currentPath,
+                node: currentNodeType,
               },
-              object: item,
+              object: objectNode,
             });
           }
-        }
-      }
-      // else it's a normal value specifier
-      else if (currentNode.type) {
-        // required?
-        if (currentNode.required && undefined === objectNode) {
-          failures.push([currentPath, 'required']);
-        }
-
-        if (!(objectNode instanceof currentNode.type)) {
-          failures.push([currentPath, 'must be of type ' + currentNode.type]);
-        }
-      }
-      // else it's unknown
-      else {
-        failures.push([currentPath, 'invalid schema']);
       }
     }
   };
