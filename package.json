@@ -1,6 +1,6 @@
 {
   "name": "simple-mongo-schema",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "An easy-to-write schema validator for Mongo JSON objects",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/hiddentao/simple-mongo-schema.git"
+    "url": "https://github.com/waigo/simple-mongo-schema.git"
   },
   "keywords": [
     "mongo",
@@ -19,9 +19,9 @@
   "author": "Ramesh Nair <ram@hiddentao.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/hiddentao/simple-mongo-schema/issues"
+    "url": "https://github.com/waigo/simple-mongo-schema/issues"
   },
-  "homepage": "https://github.com/hiddentao/simple-mongo-schema",
+  "homepage": "https://github.com/waigo/simple-mongo-schema",
   "devDependencies": {
     "run-sequence": "~0.3.6",
     "gulp-mocha": "~0.4.1",

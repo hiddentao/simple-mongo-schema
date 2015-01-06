@@ -1,6 +1,6 @@
 # simple-mongo-schema
 
-[![Build Status](https://secure.travis-ci.org/hiddentao/simple-mongo-schema.png)](http://travis-ci.org/hiddentao/simple-mongo-schema)
+[![Build Status](https://secure.travis-ci.org/waigo/simple-mongo-schema.png)](http://travis-ci.org/waigo/simple-mongo-schema)
 
 An easy-to-write schema validator for Mongo JSON objects.
 
@@ -183,8 +183,8 @@ To run the tests:
 
 ## Contributing
 
-Contributions are welcome! Please see [CONTRIBUTING.md](https://github.com/hiddentao/simple-mongo-schema/blob/master/CONTRIBUTING.md).
+Contributions are welcome! Please see [CONTRIBUTING.md](https://github.com/waigo/simple-mongo-schema/blob/master/CONTRIBUTING.md).
 
 ## License
 
-MIT - see [LICENSE.md](https://github.com/hiddentao/simple-mongo-schema/blob/master/LICENSE.md)
+MIT - see [LICENSE.md](https://github.com/waigo/simple-mongo-schema/blob/master/LICENSE.md)
