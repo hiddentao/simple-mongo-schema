@@ -1,6 +1,6 @@
 {
   "name": "simple-mongo-schema",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "An easy-to-write schema validator for Mongo JSON objects",
   "main": "index.js",
   "scripts": {
