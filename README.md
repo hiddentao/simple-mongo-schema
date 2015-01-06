@@ -48,9 +48,11 @@ var schema = {
     houseNum: {
       type: Number
     },
-    street: {
-      type: String
-    } 
+    // value which must be one of given strings
+    taxBand: {
+      type: String,
+      enum: ['low', 'medium', 'high'],
+    },
   },
   // an array of nested objects which must adhere to given schema
   children: [{

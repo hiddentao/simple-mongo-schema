@@ -119,6 +119,10 @@ test['simple mismatch'] = function() {
     name: {
       type: String
     },
+    type: {
+      type: String,
+      enum: ['low', 'medium', 'high'],
+    },
     numSiblings: {
       type: Number
     },
@@ -138,6 +142,7 @@ test['simple mismatch'] = function() {
 
   var e = tryCatch(s, {
     name: 13,
+    type: 'far',
     numSiblings: 'blah',
     born: 'fire',
     hasKids: new Date(),
@@ -149,6 +154,7 @@ test['simple mismatch'] = function() {
 
   e.failures.should.eql([
     "/name: must be a string",
+    "/type: must be one of low, medium, high",
     "/numSiblings: must be a number",
     "/born: must be of type Date",
     "/hasKids: must be true or false",

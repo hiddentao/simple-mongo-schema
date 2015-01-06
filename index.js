@@ -84,6 +84,14 @@ Schema.prototype._doValidate = function(params) {
       case String:
         if ('string' !== typeof objectNode) {
           failures.push([currentPath, 'must be a string']);
+        } else {
+          if (Array.isArray(currentNode.enum)) {
+            if (0 > currentNode.enum.indexOf(objectNode)) {
+              failures.push(
+                [currentPath, 'must be one of ' + currentNode.enum.join(', ')]
+              );
+            }
+          }
         }
         break;
       case Boolean:
@@ -105,8 +113,8 @@ Schema.prototype._doValidate = function(params) {
         break;
       default:
         // if value should be an array
-        if (currentNodeType instanceof Array) {
-          if (!(objectNode instanceof Array)) {
+        if (Array.isArray(currentNodeType)) {
+          if (!Array.isArray(objectNode)) {
             failures.push([currentPath, 'must be an array']);
           } else {
             var subSchema = currentNodeType[0];
