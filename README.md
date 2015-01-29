@@ -9,6 +9,7 @@ light-weight data type validation.
 
 ## Features
 
+* ES6-ready, uses generators
 * Elegant, minimal syntax
 * Comprehensive error reporting - all validation failures, not just first one
 * No external dependencies (so you could browserify this quite easily!)
@@ -19,7 +20,7 @@ light-weight data type validation.
 $ npm install simple-mongo-schema
 ```
 
-Here is a schema witha ll the possible field types:
+Here is a schema with all the possible field types:
 
 ```js
 var schema = {
@@ -60,7 +61,15 @@ var schema = {
   children: {
     type: [{
       name: {
-        type: String
+        type: String,
+        // custom validators
+        validate: [
+          function*(value) {
+            if ('john' === value) {
+              throw new Error('cannot be john');
+            }
+          }
+        ]
       },
       age: {
         type: Number
@@ -130,7 +139,7 @@ Now we can validate data against it:
 var schema = require('simple-mongo-schema')(CompanySchema);
 
 try {
-  schema.validate({
+  yield schema.validate({
     name: 'my company',
     employees: [
       {

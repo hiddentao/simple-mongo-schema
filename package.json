@@ -1,10 +1,10 @@
 {
   "name": "simple-mongo-schema",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "An easy-to-write schema validator for Mongo JSON objects",
   "main": "index.js",
   "scripts": {
-    "test": "gulp"
+    "test": "node --harmony ./node_modules/.bin/gulp"
   },
   "repository": {
     "type": "git",
@@ -23,12 +23,17 @@
   },
   "homepage": "https://github.com/hiddentao/simple-mongo-schema",
   "devDependencies": {
-    "run-sequence": "~0.3.6",
-    "gulp-mocha": "~0.4.1",
-    "gulp-jshint": "~1.6.3",
-    "gulp": "~3.8.1",
     "chai": "~1.9.1",
+    "co-mocha": "^1.1.0",
+    "gulp": "~3.8.1",
+    "gulp-jshint": "~1.6.3",
+    "gulp-mocha": "~0.4.1",
+    "mocha": "^2.1.0",
+    "run-sequence": "~0.3.6",
     "sinon": "~1.10.2",
     "sinon-chai": "~2.5.0"
+  },
+  "dependencies": {
+    "6to5": "^3.0.14"
   }
 }
