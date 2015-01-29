@@ -16,6 +16,8 @@ light-weight data type validation.
 
 ## Usage
 
+**This package requires ES6 support, i.e. Node 0.11.2+**
+
 ```bash
 $ npm install simple-mongo-schema
 ```
