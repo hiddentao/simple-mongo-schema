@@ -14,7 +14,7 @@ light-weight data type validation.
 * Comprehensive error reporting - all validation failures, not just first one
 * No external dependencies (so you could browserify this quite easily!)
 
-## Usage
+## Installation
 
 **This package requires ES6 support, i.e. Node 0.11.2+**
 
@@ -22,9 +22,12 @@ light-weight data type validation.
 $ npm install simple-mongo-schema
 ```
 
+## Usage 
+
 Here is a schema with all the possible field types:
 
 ```js
+
 var schema = {
   name: {
     type: String
