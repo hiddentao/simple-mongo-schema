@@ -44,9 +44,9 @@ test['construction'] = {
 };
 
 
-var tryCatch = function*(schemaObj, obj) {
+var tryCatch = function*(schemaObj, obj, options) {
   try {
-    yield schemaObj.validate(obj);
+    yield schemaObj.validate(obj, options);
     return null;
   } catch (e) {
     return e;
@@ -54,9 +54,9 @@ var tryCatch = function*(schemaObj, obj) {
 };
 
 
-var tryNoCatch = function*(schemaObj, obj) {
+var tryNoCatch = function*(schemaObj, obj, options) {
   try {
-    yield schemaObj.validate(obj);
+    yield schemaObj.validate(obj, options);
   } catch (e) {
     console.error('Unexpected error: ' + JSON.stringify(e.failures));
     throw e;
@@ -195,44 +195,54 @@ test['not required'] = function*() {
 
 
 
-test['required'] = function*() {
-  var s = schema({
-    name: {
-      type: String,
-      required: true,
-    },
-    numSiblings: {
-      type: Number,
-      required: true,
-    },
-    born: {
-      type: Date,
-      required: true,
-    },
-    hasKids: {
-      type: Boolean,
-      required: true,
-    },
-    cars: {
-      type: Array,
-      required: true,
-    },
-    address: {
-      type: Object,
-      required: true,
-    }
-  });
+test['required'] = {
+  beforeEach: function*() {
+    this.s = schema({
+      name: {
+        type: String,
+        required: true,
+      },
+      numSiblings: {
+        type: Number,
+        required: true,
+      },
+      born: {
+        type: Date,
+        required: true,
+      },
+      hasKids: {
+        type: Boolean,
+        required: true,
+      },
+      cars: {
+        type: Array,
+        required: true,
+      },
+      address: {
+        type: Object,
+        required: true,
+      }
+    });
+  },
 
-  var e = yield tryCatch(s, {});
+  'missing': function*() {
+    var e = yield tryCatch(this.s, {});
 
-  e.failures.should.eql([
-    "/name: missing value",
-    "/numSiblings: missing value",
-    "/born: missing value",
-    "/hasKids: missing value",
-    "/cars: missing value",
-    "/address: missing value"
-  ]);
+    e.failures.should.eql([
+      "/name: missing value",
+      "/numSiblings: missing value",
+      "/born: missing value",
+      "/hasKids: missing value",
+      "/cars: missing value",
+      "/address: missing value"
+    ]);
+  },
+
+  'ignore missing': function*() {
+    yield tryNoCatch(this.s, {}, {
+      ignoreMissing: true
+    });
+  }
 };
 
 

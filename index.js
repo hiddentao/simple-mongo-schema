@@ -19,12 +19,18 @@ var Schema = function(schema) {
 
 /**
  * Validate an object against this schema.
+ * @param {Object} obj Object to validate.
+ * @param {Object} [options] Additional options.
+ * @param {Boolean} [options.ignoreMissing] Whether to ignore missing keys.
  * @throws {Error} If validation fails. The `details` field is an `Array` containing error messages.
  */
-Schema.prototype.validate = function*(obj) {
+Schema.prototype.validate = function*(obj, options) {
   if (!obj) {
     throw new Error('Object is empty');
   }
+
+  options = options || {};
+  options.ignoreMissing = options.ignoreMissing || false;
 
   var failures = [];
   
@@ -35,7 +41,7 @@ Schema.prototype.validate = function*(obj) {
       node: this.schema,
     },
     object: obj,
-  });
+  }, options);
 
   if (failures.length) {
     var e = new Error('Validation failed');
@@ -52,7 +58,7 @@ Schema.prototype.validate = function*(obj) {
 /**
  * Validate given object node against given schema node.
  */
-Schema.prototype._doValidate = function*(params) {
+Schema.prototype._doValidate = function*(params, options) {
   var schemaPath = params.schema.path, 
     schemaNode = params.schema.node,
     obj = params.object,
@@ -75,7 +81,7 @@ Schema.prototype._doValidate = function*(params) {
 
     // missing?
     if (undefined === objectNode) {
-      if (currentNode.required) {
+      if (currentNode.required && !options.ignoreMissing) {
         failures.push([currentPath, 'missing value']);
       }
 
@@ -131,7 +137,7 @@ Schema.prototype._doValidate = function*(params) {
                   node: subSchema,
                 },
                 object: item,
-              });
+              }, options);
             }
           }
         }
@@ -144,7 +150,7 @@ Schema.prototype._doValidate = function*(params) {
               node: currentNodeType,
             },
             object: objectNode,
-          });
+          }, options);
         }
     }
 
