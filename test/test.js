@@ -12,7 +12,7 @@ chai.use(require('sinon-chai'));
 require('co-mocha');
 
 
-var schema = require('./');
+var schema = require('../');
 
 
 var mocker = null;
@@ -558,162 +558,12 @@ test['custom validators'] = {
 
 
 test['typeify'] = {
-  'boolean': function*() {
-    var self = this;
-
-    this.s = schema({
-      first: {
-        type: {
-          name: {
-            type: Boolean
-          },
-        }
-      }
-    });
-
-    var neutralTestCases = [
-      {
-        first: {}
-      },
-      {
-        first: {
-          name: null
-        }
-      },
-      {
-        first: {
-          name: undefined
-        }
-      },
-      {
-        first: {
-          name: ['bla']
-        }
-      },
-      {
-        first: {
-          name: {
-            a: 123
-          }
-        }
-      },
-      {
-        first: {
-          name: function() {}
-        }
-      },
-      {
-        first: {
-          name: 'blabla'
-        }
-      },
-      {
-        first: {
-          name: 2323
-        }
-      },
-    ];
-
-
-    var falseTestCases = [
-      {
-        first: {
-          name: false
-        }
-      },
-      {
-        first: {
-          name: 0
-        }
-      },
-      {
-        first: {
-          name: '0'
-        }
-      },
-      {
-        first: {
-          name: 'no'
-        }
-      },
-      {
-        first: {
-          name: 'NO'
-        }
-      },
-      {
-        first: {
-          name: 'false'
-        }
-      },
-      {
-        first: {
-          name: 'FALSE'
-        }
-      },
-    ];
-
-
-
-    var trueTestCases = [
-      {
-        first: {
-          name: true
-        }
-      },
-      {
-        first: {
-          name: 1
-        }
-      },
-      {
-        first: {
-          name: '1'
-        }
-      },
-      {
-        first: {
-          name: 'yes'
-        }
-      },
-      {
-        first: {
-          name: 'YES'
-        }
-      },
-      {
-        first: {
-          name: 'true'
-        }
-      },
-      {
-        first: {
-          name: 'TRUE'
-        }
-      },
-    ];
-
-    neutralTestCases.forEach(function(c) {
-      self.s.typeify(c).should.eql(c);
-    });
-
-    falseTestCases.forEach(function(c) {
-      self.s.typeify(c).should.eql({
-        first: {
-          name: false
-        }
-      });
-    });
-
-    trueTestCases.forEach(function(c) {
-      self.s.typeify(c).should.eql({
-        first: {
-          name: true
-        }
-      });
-    });
-
-  },
+  'boolean': require('./typeify/boolean'),
+  'date': require('./typeify/date'),
+  'array': require('./typeify/array'),
+  'object': require('./typeify/object'),
+  'string': require('./typeify/string'),
+  'number': require('./typeify/number'),
 };
 
 

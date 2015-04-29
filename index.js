@@ -196,76 +196,98 @@ Schema.prototype._doTypeify = function(params) {
     }
 
     // missing?
-    if (undefined === objectNode || null === objectNode) {
+    if (undefined === objectNode) {
       continue;
     }
 
-    switch (currentNodeType) {
-      case String:
-        if ('string' !== typeof objectNode) {
-          objectNode = '' + objectNode;
-        }
-        break;
-      case Boolean:
-        if ('boolean' !== typeof objectNode) {
-          var tmp = ('' + objectNode).toLowerCase();
+    // null?
+    if (null === objectNode) {
+      result[key] = objectNode;
+      continue;
+    }
 
-          if ('false' === tmp || '0' === tmp || 'no' === tmp) {
-            objectNode = false;
-          } else if ('true' === tmp || '1' === tmp || 'yes' === tmp) {
-            objectNode = true;
+    try {
+      switch (currentNodeType) {
+        case String:
+          if ('string' !== typeof objectNode) {
+            objectNode = '' + objectNode;
           }
-        }
-        break;
-      case Number:
-        if ('number' !== typeof objectNode) {
-          tmp = '' + objectNode;
+          break;
+        case Boolean:
+          if ('boolean' !== typeof objectNode) {
+            var tmp = ('' + objectNode).toLowerCase();
 
-          objectNode = (0 <= tmp.indexOf('.')) 
-            ? parseFloat(tmp) 
-            : parseInt(tmp);
-        }
-        break;
-      case Date:
-        if (!(objectNode instanceof Date)) {
-          objectNode = new Date(objectNode);
-        }
-        break;
-      case Object:
-      case Array:
-        // not much we can do here
-      default:
-        // if value should be an array
-        if (Array.isArray(currentNodeType)) {
-          if (Array.isArray(objectNode)) {
-            var subSchema = currentNodeType[0];
-
-            for (var index in objectNode) {
-              var item = objectNode[index];
-
-              self._doTypeify({
-                schema: {
-                  path: currentPath + '/' + index,
-                  node: subSchema,
-                },
-                object: item,
-                result: objectNode,
-              });
+            if ('false' === tmp || '0' === tmp || 'no' === tmp) {
+              objectNode = false;
+            } else if ('true' === tmp || '1' === tmp || 'yes' === tmp) {
+              objectNode = true;
             }
           }
-        }
-        // else it just be an object
-        else {
-          self._doTypeify({
-            schema: {
-              path: currentPath,
-              node: currentNodeType,
-            },
-            object: objectNode,
-            result: objectNode,
-          });
-        }
-    }
+          break;
+        case Number:
+          if ('number' !== typeof objectNode) {
+            var tmp = '' + objectNode;
+
+            tmp = (0 <= tmp.indexOf('.')) 
+              ? parseFloat(tmp) 
+              : parseInt(tmp);
+
+            if (!Number.isNaN(tmp)) {
+              objectNode = tmp;
+            }
+          }
+          break;
+        case Date:
+          if (!(objectNode instanceof Date)) {
+            try {
+              var tmp = new Date(objectNode);
+              
+              if (0 < tmp) {
+                objectNode = tmp;
+              }
+            } catch (err) {
+              // do nothing
+            }
+          }
+          break;
+        case Object:
+        case Array:
+          // not much we can do here
+        default:
+          // if value should be an array
+          if (Array.isArray(currentNodeType)) {
+            if (Array.isArray(objectNode)) {
+              var subSchema = currentNodeType[0];
+
+              for (var index in objectNode) {
+                var item = objectNode[index];
+
+                self._doTypeify({
+                  schema: {
+                    path: currentPath + '/' + index,
+                    node: subSchema,
+                  },
+                  object: item,
+                  result: objectNode,
+                });
+              }
+            }
+          }
+          // else it just be an object
+          else {
+            self._doTypeify({
+              schema: {
+                path: currentPath,
+                node: currentNodeType,
+              },
+              object: objectNode,
+              result: objectNode,
+            });
+          }
+      }
+    } catch (err) {
+      // do nothing
+    } 
 
     // set final result
     result[key] = objectNode;

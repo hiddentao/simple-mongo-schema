@@ -12,6 +12,7 @@ light-weight data type validation.
 * ES6-ready, uses generators
 * Elegant, minimal syntax
 * Comprehensive error reporting - all validation failures, not just first one
+* [Type-matching](#type-matching)
 * No external dependencies (so you could browserify this quite easily!)
 
 ## Installation
@@ -27,7 +28,6 @@ $ npm install simple-mongo-schema
 Here is a schema with all the possible field types:
 
 ```js
-
 var schema = {
   name: {
     type: String
@@ -189,6 +189,114 @@ try {
   */
   console.log(err.failures);
 }
+```
+
+### Type matching
+
+When stringifying JSON you often lose type information (e.g. `Date` instances get converted to strings). When the stringified version gets parsed back into a JSON object you can use the `typeify()` function to help restore type information:
+
+```js
+var schema = {
+  name: {
+    type: String
+  },
+  isMarried: {
+    type: Boolean
+  },
+  numCars: {
+    type: Number
+  },
+  born: {
+    type: Date
+  }
+};
+
+var object = {
+  name: 'John',
+  isMarried: true,
+  numCars: 3,
+  born: new Date(2015,0,1)
+}
+
+var str = JSON.stringify(object); 
+
+/*
+"{"name":"John","isMarried":true,"numCars":3,"born":"2014-12-31T16:00:00.000Z"}"
+*/
+
+var newObject = JSON.parse(str);
+
+/*
+{
+  name: 'John',
+  isMarried: true,
+  numCars: 3,
+  born: "2014-12-31T16:00:00.000Z"
+}
+*/
+
+var typedObject = schema.typeify(newObject);
+
+/*
+{
+  name: 'John',
+  isMarried: true,
+  numCars: 3,
+  born: Date("2014-12-31T16:00:00.000Z")
+}
+*/
+```
+
+The type-ification process is quite tolerant of values. For example, for boolean values;
+
+* `false` <- `"false"` or `"FALSE"` or `"no"` or `"NO"` or `"0"` or `0`
+* `true` <- `"true"` or `"TRUE"` or `"yes"` or `"YES"` or `"1"` or `1`
+
+To take the previous example again:
+
+```js
+var newObject = {
+  name: 'John'
+  isMarried: 'no'
+  numCars: '76'
+  born: '2014-12-31T16:00:00.000Z'
+};
+
+var typedObject = schema.typeify(newObject);
+
+/*
+{
+  name: 'John',
+  isMarried: false,
+  numCars: 76,
+  born: Date("2014-12-31T16:00:00.000Z")
+}
+*/
+```
+
+
+It is also smart enough to know when a conversion isn't possible. Instead of throwing an error when it cannot convert it will simply pass through the original value.
+
+Using the schema from our previous example:
+
+```js
+var newObject = {
+  name: null
+  isMarried: function() {}
+  numCars: false,
+  born: 'blabla'
+};
+
+var typedObject = schema.typeify(newObject);
+
+/*
+{
+  name: null,
+  isMarried: function() {}
+  numCars: false
+  born: 'blabla'
+}
+*/
 ```
 
 ## Building
