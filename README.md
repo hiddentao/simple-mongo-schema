@@ -275,7 +275,7 @@ var typedObject = schema.typeify(newObject);
 ```
 
 
-It is also smart enough to know when a conversion isn't possible. Instead of throwing an error when it cannot convert it will simply pass through the original value.
+It is also smart enough to know when a conversion isn't possible. Instead of throwing an error it will simply pass through the original value.
 
 Using the schema from our previous example:
 
