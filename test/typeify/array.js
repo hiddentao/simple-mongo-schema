@@ -4,7 +4,7 @@ var schema = require('../../');
 
 
 
-module.exports = function*() {
+exports.default = function*() {
   var self = this;
 
   this.s = schema({
@@ -73,3 +73,46 @@ module.exports = function*() {
 
 
 
+
+
+exports.specific = function*() {
+  var self = this;
+
+  var s = schema({
+    first: {
+      type: {
+        name: {
+          type: [{
+            alive: {
+              type: Boolean
+            }
+          }]
+        },
+      }
+    }
+  });
+
+  s.typeify({
+    first: {
+      name: [
+        {
+          alive: 'false'
+        },
+        {
+          alive: 'yes'
+        }
+      ]
+    }
+  }).should.eql({
+    first: {
+      name: [
+        {
+          alive: false
+        },
+        {
+          alive: true
+        }
+      ]
+    }    
+  });
+};

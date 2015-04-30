@@ -188,7 +188,7 @@ Schema.prototype._doTypeify = function(params) {
       objectNode = object[key],
       currentNodeType = currentNode.type;
 
-    // console.log(currentPath, currentNodeType, key, objectNode, result);
+    // console.log(currentPath, currentNodeType.toString(), key, objectNode, result);
 
     // if type not set
     if (!currentNodeType) {
@@ -268,7 +268,7 @@ Schema.prototype._doTypeify = function(params) {
                     node: subSchema,
                   },
                   object: item,
-                  result: objectNode,
+                  result: item,
                 });
               }
             }
