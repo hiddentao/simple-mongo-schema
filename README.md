@@ -1,5 +1,7 @@
 # simple-mongo-schema
 
+**DEPRECATED. This library has been superseded by [simple-nosql-schema](https://github.com/hiddentao/simple-nosql-schema)**
+
 [![Build Status](https://secure.travis-ci.org/hiddentao/simple-mongo-schema.png)](http://travis-ci.org/hiddentao/simple-mongo-schema)
 
 An easy-to-write schema validator for Mongo JSON objects.
